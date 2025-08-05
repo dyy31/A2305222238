@@ -7,7 +7,7 @@ import random, string, sqlite3
 # Import logger
 from logger_middleware import logging_middleware, log
 
-# --------------------- Database Setup ----------------------
+# Database Setup
 conn = sqlite3.connect("urls.db", check_same_thread=False)
 cursor = conn.cursor()
 cursor.execute("""
@@ -31,17 +31,17 @@ CREATE TABLE IF NOT EXISTS clicks (
 """)
 conn.commit()
 
-# ---------------------- App Setup -----------------
+# App Setup
 app = FastAPI()
 app.middleware("http")(logging_middleware)
 
-# ------------------- Models -----------------
+#Models
 class URLRequest(BaseModel):
     url: HttpUrl
     validity: int = 30  # minutes
     shortcode: str | None = None
 
-# -------------- Helpers -----------------
+#Helpers
 def generate_shortcode(length=6):
     return ''.join(random.choices(string.ascii_letters + string.digits, k=length))
 
@@ -49,7 +49,7 @@ def is_shortcode_unique(code):
     cursor.execute("SELECT shortcode FROM urls WHERE shortcode=?", (code,))
     return cursor.fetchone() is None
 
-# -------------- API Endpoints -----------------
+#API Endpoints
 @app.post("/shorturls")
 def create_short_url(data: URLRequest):
     shortcode = data.shortcode or generate_shortcode()
