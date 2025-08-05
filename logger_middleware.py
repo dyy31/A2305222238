@@ -1,4 +1,3 @@
-# logger_middleware.py
 import requests
 
 LOG_URL = "http://20.244.56.144/evaluation-service/logs"
